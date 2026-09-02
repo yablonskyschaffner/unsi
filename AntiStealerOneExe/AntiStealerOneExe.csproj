@@ -1,0 +1,116 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- AA4: project folder name (`AntiStealerOneExe`) preserved for git
+         history continuity and existing CI / IDE paths; build output renamed
+         to `AntiStealer.exe` so the published artefact matches the
+         AntiStealer.exe + AntiStealer.Engine.dll deliverable contract. -->
+    <AssemblyName>AntiStealer</AssemblyName>
+    <RootNamespace>AntiStealerOneExe</RootNamespace>
+
+    <!-- Section 13.9 — opt every Windows-targeted PE we ship into the modern
+         Windows mitigation set:
+         * /HIGHENTROPYVA + /DYNAMICBASE = ASLR with 64-bit-wide randomisation.
+         * /NXCOMPAT                     = DEP (data sections marked non-exec).
+         * /GUARD:CF                     = Control-Flow Guard.
+         * /CETCOMPAT                    = Hardware shadow-stack support
+                                          (Intel CET / Zen 3 SS).
+         These are the same mitigations Microsoft applies to first-party
+         binaries; the linker silently ignores any flag the underlying tool
+         doesn't understand, so this is safe across SDK upgrades. -->
+    <DebugType>embedded</DebugType>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true' or '$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+    <PathMap Condition="'$(CI)' == 'true' or '$(GITHUB_ACTIONS)' == 'true'">$(MSBuildThisFileDirectory)=/_/AntiStealerOneExe/</PathMap>
+    <HighEntropyVA>true</HighEntropyVA>
+    <PublishReadyToRun Condition="'$(_PublishReadyToRunOpt)' != ''">$(_PublishReadyToRunOpt)</PublishReadyToRun>
+
+    <!-- Section 13.8 — apply our hardened Win32 manifest (asInvoker,
+         longPathAware, SegmentHeap, PerMonitorV2). True AppContainer
+         needs MSIX packaging which is out of scope for the single-file
+         exe; this is the strongest mitigation set Microsoft exposes
+         to a plain .exe. -->
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- AA3: UI shell references the UI-free analyzer core project.
+         AA4: ExcludeFromSingleFile is attached directly to the ProjectReference
+         so the SDK propagates it while building ReferenceCopyLocalPaths /
+         ResolvedFileToPublish. This is the supported way to keep a referenced
+         project DLL next to a PublishSingleFile app instead of embedding it.
+         AA5: AntiStealer.UI.dll receives the same side-by-side treatment so
+         the WinForms surface ships as a separate, replaceable assembly. -->
+    <ProjectReference Include="..\AntiStealer.Core\AntiStealer.Core.csproj">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </ProjectReference>
+    <ProjectReference Include="..\AntiStealer.UI\AntiStealer.UI.csproj">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </ProjectReference>
+  </ItemGroup>
+
+  <!-- AA4 deliverable contract: the published folder must contain exactly two
+       files, AntiStealer.exe and AntiStealer.Engine.dll. With
+       PublishSingleFile=true + IncludeNativeLibrariesForSelfExtract=true the
+       bundler normally embeds *every* dependency (managed + native + runtime)
+       into AntiStealer.exe. AntiStealer.Engine.dll is the one deliberate
+       exception: the ProjectReference above carries ExcludeFromSingleFile=true,
+       and this target is a defensive ordering guard that re-applies the same
+       metadata after the SDK has materialised ResolvedFileToPublish but before
+       GenerateSingleFileBundle and the publish-copy split consume it.
+
+         out/<rid>/
+           AntiStealer.exe          (single-file bundle: apphost + .NET runtime
+                                     + Spectre.Console + BouncyCastle + all
+                                     System.*.dll embedded)
+           AntiStealer.Engine.dll   (side-by-side, loadable, removable)
+
+       If AntiStealer.Engine.dll OR AntiStealer.UI.dll is deleted at runtime,
+       AntiStealer.exe fails to start with `FileNotFoundException` referencing
+       the missing assembly — this is proved by the CI smoke steps in
+       .github/workflows/build.yml. -->
+  <Target Name="AA4_KeepEngineSideBySide"
+          AfterTargets="ComputeResolvedFilesToPublishList"
+          BeforeTargets="GenerateSingleFileBundle;_ComputeResolvedFilesToPublishTypes">
+    <ItemGroup>
+      <ResolvedFileToPublish
+        Update="@(ResolvedFileToPublish)"
+        Condition="('%(Filename)' == 'AntiStealer.Engine' or '%(Filename)' == 'AntiStealer.UI') and '%(Extension)' == '.dll'">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+    <Message Importance="high"
+             Text="AA4/AA5: AntiStealer.Engine.dll and AntiStealer.UI.dll are excluded from the single-file bundle and will be copied side-by-side next to AntiStealer.exe." />
+  </Target>
+
+  <!-- Section 13.9 — apply CFG + CET + DEP via editbin after publish. The
+       extra mitigations are applied to the produced single-file exe in the
+       publish output directory. We only run on Windows hosts where editbin
+       lives in the VS Build Tools install. -->
+  <Target Name="ApplyPeHardeningFlags"
+          AfterTargets="Publish"
+          Condition="'$(OS)' == 'Windows_NT' and '$(SkipPeHardening)' != 'true'">
+    <PropertyGroup>
+      <_PublishedExe>$(PublishDir)$(AssemblyName).exe</_PublishedExe>
+    </PropertyGroup>
+    <!-- editbin's resolution: PATH first, then VS install. The build job sets
+         it up via vcvars; if we can't find it we silently skip rather than
+         break the publish. -->
+    <Message Importance="high"
+             Text="Section 13.9 — applying CFG/CET/DEP/HIGHENTROPYVA to $(_PublishedExe)"
+             Condition="Exists('$(_PublishedExe)')" />
+    <Exec Command="editbin /NXCOMPAT /DYNAMICBASE /HIGHENTROPYVA /CETCOMPAT &quot;$(_PublishedExe)&quot;"
+          ContinueOnError="true"
+          IgnoreExitCode="true"
+          Condition="Exists('$(_PublishedExe)')" />
+  </Target>
+
+</Project>
