@@ -1,0 +1,10 @@
+C:\Users\tolst\OneDrive\Рабочий стол\antistealer project\AntiStealer.Core\bin\Debug\net8.0\AntiStealer.Engine.deps.json
+C:\Users\tolst\OneDrive\Рабочий стол\antistealer project\AntiStealer.Core\bin\Debug\net8.0\AntiStealer.Engine.dll
+C:\Users\tolst\OneDrive\Рабочий стол\antistealer project\AntiStealer.Core\obj\Debug\net8.0\AntiStealer.Core.csproj.AssemblyReference.cache
+C:\Users\tolst\OneDrive\Рабочий стол\antistealer project\AntiStealer.Core\obj\Debug\net8.0\AntiStealer.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\tolst\OneDrive\Рабочий стол\antistealer project\AntiStealer.Core\obj\Debug\net8.0\AntiStealer.Core.AssemblyInfoInputs.cache
+C:\Users\tolst\OneDrive\Рабочий стол\antistealer project\AntiStealer.Core\obj\Debug\net8.0\AntiStealer.Core.AssemblyInfo.cs
+C:\Users\tolst\OneDrive\Рабочий стол\antistealer project\AntiStealer.Core\obj\Debug\net8.0\AntiStealer.Core.csproj.CoreCompileInputs.cache
+C:\Users\tolst\OneDrive\Рабочий стол\antistealer project\AntiStealer.Core\obj\Debug\net8.0\AntiStealer.Engine.dll
+C:\Users\tolst\OneDrive\Рабочий стол\antistealer project\AntiStealer.Core\obj\Debug\net8.0\refint\AntiStealer.Engine.dll
+C:\Users\tolst\OneDrive\Рабочий стол\antistealer project\AntiStealer.Core\obj\Debug\net8.0\ref\AntiStealer.Engine.dll
