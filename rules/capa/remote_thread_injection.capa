@@ -1,0 +1,6 @@
+capability: injects code via classic remote-thread primitive
+match: all
+imports:
+  - VirtualAllocEx
+  - WriteProcessMemory
+  - CreateRemoteThread
