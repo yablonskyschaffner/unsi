@@ -1,0 +1,11 @@
+title: Stealer — Telegram exfil with formatter
+description: >
+  Fires when a sample contains a Telegram Bot-API URL together with a format specifier
+  like %s / {0} — this is almost always an info-stealer templating stolen credentials
+  into the URL before calling sendMessage.
+detection:
+  selection:
+    - "api.telegram.org/bot"
+    - "sendMessage"
+    - "%s"
+  condition: selection
