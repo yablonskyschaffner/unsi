@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- AA3: benchmarks now reference the UI-free Core project, so we can drop
+         the WinForms / net8.0-windows target and run on plain .NET 8. -->
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>AntiStealer.Benchmarks</RootNamespace>
+    <AssemblyName>AntiStealer.Benchmarks</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <!-- BenchmarkDotNet always needs Release. -->
+    <Optimize Condition="'$(Configuration)'=='Release'">true</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AntiStealer.Core\AntiStealer.Core.csproj" />
+  </ItemGroup>
+
+</Project>
