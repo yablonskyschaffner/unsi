@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Section 13.8 — Win32 manifest with the strongest mitigation flags
+  available to a non-MSIX-packaged WinForms exe.
+
+  True AppContainer isolation requires shipping the binary inside an
+  MSIX/AppX package and is therefore out of scope for the single-file
+  exe; this manifest applies the closest equivalent set of opt-ins:
+
+    * asInvoker            — never silently elevates; runs at the
+                             integrity level of the parent process.
+    * uiAccess=false       — refuses UIPI bypass even when signed.
+    * longPathAware        — respects the Windows-10 path-length
+                             registry knob; needed for deep zip
+                             extraction without relying on \\?\.
+    * heapType=SegmentHeap — opts the process into the Windows-10
+                             segment heap, whose guard pages and
+                             metadata isolation make use-after-frees
+                             materially harder to exploit.
+    * dpiAware=PerMonitorV2 — avoids host-side scaling fuzz on
+                             multi-monitor setups so screenshots /
+                             OCR-based detectors render correctly.
+    * supportedOS GUIDs    — explicitly opt into Windows 10 / 11
+                             behaviour; without these the exe is
+                             treated as a Vista-era binary, which
+                             disables several shim-loaded
+                             mitigations (e.g. ProcessMitigationPolicy).
+-->
+<assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
+  <assemblyIdentity
+      version="1.0.0.0"
+      name="AntiStealerOneExe.app"
+      type="win32" />
+
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
+    <security>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+
+  <application xmlns="urn:schemas-microsoft-com:asm.v3">
+    <windowsSettings>
+      <longPathAware xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">true</longPathAware>
+      <heapType xmlns="http://schemas.microsoft.com/SMI/2020/WindowsSettings">SegmentHeap</heapType>
+      <dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">true/PM</dpiAware>
+      <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">PerMonitorV2</dpiAwareness>
+    </windowsSettings>
+  </application>
+
+  <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
+    <application>
+      <!-- Windows 10 -->
+      <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" />
+      <!-- Windows 11 (same GUID per Microsoft docs; left explicit for
+           future readers in case Microsoft ever introduces a new GUID). -->
+    </application>
+  </compatibility>
+</assembly>
