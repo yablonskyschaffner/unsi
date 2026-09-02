@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- AA5: WinForms surface (MainForm + SettingsForm + UI helpers) extracted
+         out of the AntiStealerOneExe (.exe) project into its own library so
+         the executable mirrors the AntiStealer.Core / AntiStealer.Engine.dll
+         split. The .exe is now a 30-line apphost that does
+         Application.Run(new MainForm()); MainForm and everything it transitively
+         needs lives here, in AntiStealer.UI.dll. Like Engine.dll, this assembly
+         is excluded from the single-file bundle and ships side-by-side. -->
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>AntiStealer.UI</AssemblyName>
+    <!-- RootNamespace kept as AntiStealerOneExe so MainForm / SettingsForm /
+         the SettingsPath helpers continue to resolve under their pre-split
+         names. The exe Program.cs still uses `new MainForm()` exactly as it
+         did before the extraction. -->
+    <RootNamespace>AntiStealerOneExe</RootNamespace>
+
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true' or '$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+    <PathMap Condition="'$(CI)' == 'true' or '$(GITHUB_ACTIONS)' == 'true'">$(MSBuildThisFileDirectory)=/_/AntiStealer.UI/</PathMap>
+    <DebugType>embedded</DebugType>
+    <EmbedAllSources>true</EmbedAllSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AntiStealer.Core\AntiStealer.Core.csproj" />
+  </ItemGroup>
+
+</Project>
