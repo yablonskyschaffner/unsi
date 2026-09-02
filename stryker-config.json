@@ -1,0 +1,27 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stryker-mutator/stryker-net/master/docs/stryker-config.schema.json",
+  "stryker-config": {
+    "project": "AntiStealerOneExe/AntiStealerOneExe.csproj",
+    "test-projects": [
+      "AntiStealer.Tests/AntiStealer.Tests.csproj"
+    ],
+    "reporters": [
+      "html",
+      "progress"
+    ],
+    "mutation-level": "Standard",
+    "thresholds": {
+      "high": 80,
+      "low": 60,
+      "break": 50
+    },
+    "// section 6.4": "Mutation surface is now the entire AntiStealer.Core library plus the GUI entry-point. Files we deliberately exclude:",
+    "// - AntiStealer.Core/Analyzer.cs: 4.9k-line monolith, mutation runs hit the test-timeout budget hard. Tracked separately for a sliced re-introduction.",
+    "// - AntiStealerOneExe/*UI*: WinForms code is exercised via integration only, mutating it produces too many UI-bound timeouts.",
+    "mutate": [
+      "AntiStealer.Core/**/*.cs",
+      "!AntiStealer.Core/Analyzer.cs",
+      "AntiStealerOneExe/Program.cs"
+    ]
+  }
+}
