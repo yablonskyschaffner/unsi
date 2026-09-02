@@ -1,0 +1,5 @@
+title: Stealer — Discord webhook exfil
+detection:
+  selection:
+    - "discord.com/api/webhooks/"
+  condition: selection
