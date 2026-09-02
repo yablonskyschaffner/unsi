@@ -1,0 +1,213 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealerOneExe\\AntiStealerOneExe.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealer.Core\\AntiStealer.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealer.Core\\AntiStealer.Core.csproj",
+        "projectName": "AntiStealer.Engine",
+        "projectPath": "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealer.Core\\AntiStealer.Core.csproj",
+        "packagesPath": "C:\\Users\\tolst\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealer.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\tolst\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "BouncyCastle.Cryptography": {
+              "target": "Package",
+              "version": "[2.4.0, )"
+            },
+            "Spectre.Console": {
+              "target": "Package",
+              "version": "[0.49.1, )"
+            },
+            "Spectre.Console.Cli": {
+              "target": "Package",
+              "version": "[0.49.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.422/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealer.UI\\AntiStealer.UI.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealer.UI\\AntiStealer.UI.csproj",
+        "projectName": "AntiStealer.UI",
+        "projectPath": "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealer.UI\\AntiStealer.UI.csproj",
+        "packagesPath": "C:\\Users\\tolst\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealer.UI\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\tolst\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0-windows"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0-windows7.0": {
+            "targetAlias": "net8.0-windows",
+            "projectReferences": {
+              "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealer.Core\\AntiStealer.Core.csproj": {
+                "projectPath": "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealer.Core\\AntiStealer.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WindowsForms": {
+              "privateAssets": "none"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.422/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealerOneExe\\AntiStealerOneExe.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealerOneExe\\AntiStealerOneExe.csproj",
+        "projectName": "AntiStealer",
+        "projectPath": "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealerOneExe\\AntiStealerOneExe.csproj",
+        "packagesPath": "C:\\Users\\tolst\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealerOneExe\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\tolst\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0-windows"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0-windows7.0": {
+            "targetAlias": "net8.0-windows",
+            "projectReferences": {
+              "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealer.Core\\AntiStealer.Core.csproj": {
+                "projectPath": "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealer.Core\\AntiStealer.Core.csproj"
+              },
+              "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealer.UI\\AntiStealer.UI.csproj": {
+                "projectPath": "C:\\Users\\tolst\\OneDrive\\Рабочий стол\\antistealer project\\AntiStealer.UI\\AntiStealer.UI.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WindowsForms": {
+              "privateAssets": "none"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.422/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
