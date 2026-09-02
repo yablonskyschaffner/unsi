@@ -1,0 +1,7 @@
+capability: monitors and modifies the clipboard
+match: all
+imports:
+  - OpenClipboard
+  - GetClipboardData
+  - SetClipboardData
+  - CloseClipboard
