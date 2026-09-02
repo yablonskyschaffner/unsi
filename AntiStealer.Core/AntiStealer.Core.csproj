@@ -1,0 +1,80 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- AA4: project folder name (`AntiStealer.Core`) preserved for git
+         history continuity and existing CI / IDE paths; build output renamed
+         to `AntiStealer.Engine.dll` so the published artefact matches the
+         AntiStealer.exe + AntiStealer.Engine.dll deliverable contract. -->
+    <AssemblyName>AntiStealer.Engine</AssemblyName>
+    <!-- AA2: extracted analyzer / report-writer / CLI frontend out of the WinExe
+         so they can be reused by a future REST API / service / Linux build. This
+         project stays UI-free (no System.Windows.Forms reference). RootNamespace
+         kept as `AntiStealerOneExe` (AA4) so existing serialised JSON reports
+         and the 656 unit tests using `using AntiStealerOneExe;` continue to
+         resolve; the new public engine facade lives in the dedicated
+         `AntiStealer.Engine` namespace under `Engine/`. -->
+    <RootNamespace>AntiStealerOneExe</RootNamespace>
+
+    <!-- Section 13.12 — reproducible / deterministic build settings.
+         * Deterministic + ContinuousIntegrationBuild remove timestamps & MVIDs from the
+           emitted assembly, so identical sources produce identical bytes (per the
+           reproducible-builds.org spec).
+         * EmbeddedSources + DebugType=embedded keep PDB content in the DLL so we can
+           ship full source-debug info without separate .pdb files.
+         * Source Link is published via DebugSymbols so Visual Studio / Rider can
+           navigate from a customer crash dump back to the exact source revision. -->
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true' or '$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+    <PathMap Condition="'$(CI)' == 'true' or '$(GITHUB_ACTIONS)' == 'true'">$(MSBuildThisFileDirectory)=/_/AntiStealer.Core/</PathMap>
+    <DebugType>embedded</DebugType>
+    <EmbedAllSources>true</EmbedAllSources>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <!-- Section 22.* — fail the build on warnings inside the Core library so we
+         can keep the public surface clean as we add detectors. The setting is
+         scoped to Core; the GUI / Benchmarks projects intentionally still allow
+         warnings during development. -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Section 10 (PR 8) — let the test project poke at the rule-engine
+         internals (HashDirectory, BuildArgs, tokeniser) without forcing them
+         into the public API. -->
+    <InternalsVisibleTo Include="AntiStealer.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
+
+    <!-- Section 7.1 — modern CLI framework. Spectre.Console is the rendering
+         engine (colors, tables, live progress, prompts) and Spectre.Console.Cli
+         is the command-tree / settings-binder layered on top. Together they
+         cover sections 7.1 (framework + auto-help/version/completion),
+         7.3 (Spectre TUI primitives) and 7.4 (live progress bar + ETA),
+         and the binder makes 7.5–7.8 (ndjson, exit-code policy, watch,
+         ci-scan) trivial to add as additional `<Command>` types. -->
+    <PackageReference Include="Spectre.Console"     Version="0.49.1" />
+    <PackageReference Include="Spectre.Console.Cli" Version="0.49.1" />
+  </ItemGroup>
+
+  <!-- Section 13.4 — license-key embed pipeline. The build pipeline (CI) writes
+       the vendor's HMAC key and Ed25519 public key into these files immediately
+       before publish; LicenseVerifier.ResolveHmacKey / ResolveEd25519PublicKeyBase64
+       read them as embedded resources. The Condition prevents the build from
+       breaking on dev machines where the files don't exist — the verifier then
+       falls back to the placeholder constants and rejects every signed licence,
+       which is the desired fail-closed behaviour. -->
+  <ItemGroup>
+    <EmbeddedResource Include="Embedded\LicenseHmacKey.txt"
+                      Condition="Exists('Embedded\LicenseHmacKey.txt')"
+                      LogicalName="AntiStealerOneExe.Embedded.LicenseHmacKey.txt" />
+    <EmbeddedResource Include="Embedded\LicenseEd25519PublicKey.txt"
+                      Condition="Exists('Embedded\LicenseEd25519PublicKey.txt')"
+                      LogicalName="AntiStealerOneExe.Embedded.LicenseEd25519PublicKey.txt" />
+  </ItemGroup>
+
+</Project>
